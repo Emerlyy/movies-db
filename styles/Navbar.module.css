@@ -1,0 +1,22 @@
+
+.nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.logo{
+    font-size: 1.4rem;
+    font-weight: bold;
+    letter-spacing: .25rem;
+}
+
+.list{
+    display: flex;
+    column-gap: 20px;
+}
+
+.active{
+    color: red;
+}

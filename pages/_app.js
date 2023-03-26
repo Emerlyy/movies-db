@@ -1,5 +1,13 @@
+import Layout from '@/components/Layout';
+import { ColorModeProvider } from '@/context/ColorModeContext';
 import '@/styles/globals.css'
 
-export default function App({ Component, pageProps }) {
-  return <Component {...pageProps} />
-}
+const App = ({ Component, pageProps }) => (
+  <ColorModeProvider>
+    <Layout>
+      <Component {...pageProps} />
+    </Layout>
+  </ColorModeProvider>
+);
+
+export default App;
