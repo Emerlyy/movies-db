@@ -10,11 +10,12 @@ const movieApi = {
       const {
         page = 1,
         sortingType = 'popularity.desc',
-        withGenres = '',
-        rating = [0, 10]
+        genres = '',
+        ratingLower = 0,
+        ratingHigher = 10,
       } = options;
 
-      const res = await fetch(`${BASE_URL}/discover/movie?api_key=${API_KEY}&page=${page}&sort_by=${sortingType}&vote_average.gte=${rating[0]}&vote_average.lte=${rating[1]}&include_adult=false&vote_count.gte=200${withGenres && `&with_genres=${withGenres}`}`);
+      const res = await fetch(`${BASE_URL}/discover/movie?api_key=${API_KEY}&page=${page}&sort_by=${sortingType}&vote_average.gte=${ratingLower}&vote_average.lte=${ratingHigher}&include_adult=false&vote_count.gte=50${genres && `&with_genres=${genres}`}`);
       const data = await res.json();
       return data;
     },
@@ -23,17 +24,56 @@ const movieApi = {
       const data = await res.json();
       return data;
     },
-    search: async (query) => {
-      const res = await fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURI(query)}`)
+    search: async ({ query, page = 1 }) => {
+      const res = await fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURI(query)}&page=${page}`)
       const data = await res.json();
       return data;
+    },
+    getGenres: async () => {
+      const res = await fetch(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}`);
+      const data = await res.json();
+      return data.genres;
+    },
+    getTrending: async (duration = 'day') => {
+      const res = await fetch(`https://api.themoviedb.org/3/trending/movie/${duration}?api_key=${API_KEY}`);
+      const data = await res.json();
+      return data.results;
     }
   },
   tv: {
+    explore: async (options = {}) => {
+
+      const {
+        page = 1,
+        sortingType = 'popularity.desc',
+        genres = '',
+        ratingLower = 0,
+        ratingHigher = 10,
+      } = options;
+
+      const res = await fetch(`${BASE_URL}/discover/tv?api_key=${API_KEY}&page=${page}&sort_by=${sortingType}&vote_average.gte=${ratingLower}&vote_average.lte=${ratingHigher}&include_adult=false&vote_count.gte=50${genres && `&with_genres=${genres}`}`);
+      const data = await res.json();
+      return data;
+    },
     findById: async (id) => {
       const res = await fetch(`${BASE_URL}/tv/${id}?api_key=${API_KEY}`);
       const data = await res.json();
       return data;
+    },
+    search: async ({ query, page = 1 }) => {
+      const res = await fetch(`${BASE_URL}/search/tv?api_key=${API_KEY}&query=${encodeURI(query)}&page=${page}`)
+      const data = await res.json();
+      return data;
+    },
+    getGenres: async () => {
+      const res = await fetch(`${BASE_URL}/genre/tv/list?api_key=${API_KEY}`);
+      const data = await res.json();
+      return data.genres;
+    },
+    getTrending: async (duration = 'day') => {
+      const res = await fetch(`https://api.themoviedb.org/3/trending/tv/${duration}?api_key=${API_KEY}`);
+      const data = await res.json();
+      return data.results;
     }
   },
   getImageUrl: (url, size = 'lg') => {
@@ -53,6 +93,11 @@ const movieApi = {
         break;
     }
     return `${IMG_URL}/w${w}_and_h${h}_face${url}`;
+  },
+  searchAll: async (query) => {
+    const res = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURI(query)}`);
+    const data = await res.json();
+    return data;
   }
 }
 
