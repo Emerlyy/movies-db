@@ -1,39 +1,97 @@
 import ItemCard from "@/components/ItemCard";
-import { Box, Card, CardContent, CardMedia, Container, Grid, Stack, Typography } from "@mui/material";
+import { Box, Button, Container, FormControl, Paper, TextField, Typography } from "@mui/material";
 
 import Head from "next/head";
-import { useEffect, useState } from "react";
 import movieApi from "@/client";
 
-const Home = () => {
+import { useRouter } from "next/router";
 
-  const [movie, setMovie] = useState({});
+export const getStaticProps = async () => {
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await movieApi.movies.findById(550);
-      setMovie(data);
+  const trendingMovies = await movieApi.movies.getTrending();
+  const trendingTv = await movieApi.tv.getTrending();
+
+  return {
+    props: {
+      movies: trendingMovies,
+      tv: trendingTv
     }
-    fetchData();
-  }, [])
+  }
+}
+
+const Home = ({ movies, tv }) => {
+  const router = useRouter();
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    router.push({ pathname: '/search', query: { query: e.target.search.value } })
+  }
 
   return (
     <>
       <Head>
         <title>Home</title>
       </Head>
-      <Container maxWidth='xl'>
-        <Typography variant="h3" component="h1">Best movies of all times</Typography>
-        {movie &&
-          <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: 'repeat(auto-fit, 320px)', justifyContent: 'center' }}>
-            <ItemCard movie={movie} />
-            <ItemCard movie={movie} />
-            <ItemCard movie={movie} />
-            <ItemCard movie={movie} />
-            <ItemCard movie={movie} />
+      <Paper elevation={0} sx={{ pt: 6, pb: 8 }}>
+        <Container maxWidth='lg'>
+          <Typography mb={2} component='h2' variant='h3' fontWeight={700}>Welcome.</Typography>
+          <Typography mb={6} component='h3' fontSize={28}>Millions of movies, TV shows and people to discover. Explore now.</Typography>
+          <FormControl component='form' fullWidth onSubmit={handleFormSubmit} sx={{ position: 'relative' }}>
+            <TextField name='search' size='small' autoComplete='off' placeholder='Search for a movie or tv show' color='text' />
+            <Button variant='contained' disableElevation color="secondary" sx={{ position: 'absolute', height: '100%', top: 0, right: 0, textTransform: 'none', px: 6 }}>Search</Button>
+          </FormControl>
+          <Box mt={8}>
+            <Typography mb={1} fontWeight={700} variant="h5" component="h3">Trending movies</Typography>
+            {
+              movies.length &&
+              <Box sx={{
+                position: 'relative',
+                '&::after': {
+                  content: '""',
+                  display: 'block',
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  height: '100%',
+                  width: 60,
+                  background: 'linear-gradient(to right, var(--color-fade-start), var(--color-fade-end))'
+                }
+              }}>
+                <Box sx={{ display: 'flex', gap: 2, overflowX: 'auto' }}>
+                  {
+                    movies.map(({ title, release_date, poster_path, id }) => <ItemCard key={id} maxWidth={260} sx={{ flexShrink: 0 }} title={title} releaseDate={release_date} posterPath={poster_path} path={`movies/${id}`} />)
+                  }
+                </Box>
+              </Box>
+            }
           </Box>
-        }
-      </Container>
+          <Box mt={8}>
+            <Typography mb={1} fontWeight={700} variant="h5" component="h3">Trending TVShows</Typography>
+            {
+              tv.length &&
+              <Box sx={{
+                position: 'relative',
+                '&::after': {
+                  content: '""',
+                  display: 'block',
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  height: '100%',
+                  width: 60,
+                  background: 'linear-gradient(to right, var(--color-fade-start), var(--color-fade-end))'
+                }
+              }}>
+                <Box sx={{ display: 'flex', gap: 2, overflowX: 'auto' }}>
+                  {
+                    tv.map(({ name, first_air_date, poster_path, id }) => <ItemCard key={id} maxWidth={260} sx={{ flexShrink: 0 }} title={name} releaseDate={first_air_date} posterPath={poster_path} path={`tv/${id}`} />)
+                  }
+                </Box>
+              </Box>
+            }
+          </Box>
+        </Container>
+      </Paper>
     </>
   )
 };
