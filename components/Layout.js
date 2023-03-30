@@ -1,16 +1,15 @@
 import Header from "./Header";
 
-import styles from '../styles/Layout.module.css';
-import { Paper } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 
 const Layout = ({ children }) => {
   return (
-    <div className={styles.wrapper}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100svh' }}>
       <Header />
       <Paper square component='main' sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
         {children}
       </Paper>
-    </div>
+    </Box>
   );
 };
 
