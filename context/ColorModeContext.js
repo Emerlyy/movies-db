@@ -10,12 +10,15 @@ export const ColorModeProvider = ({ children }) => {
     toggleColorMode: () => {
       setMode((prevMode) => prevMode === 'light' ? 'dark' : 'light')
       localStorage.setItem('theme', mode === 'light' ? 'dark' : 'light')
+      document.documentElement.dataset.theme = mode === 'light' ? 'dark' : 'light';
     },
     mode,
   }), [mode]);
 
   useEffect(() => {
-    setMode(localStorage.getItem('theme') || 'dark');
+    const mode = localStorage.getItem('theme') || 'dark';
+    setMode(mode);
+    document.documentElement.dataset.theme = mode;
   }, [])
 
   const theme = useMemo(() =>
