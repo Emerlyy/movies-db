@@ -1,25 +1,20 @@
 import movieApi from "@/client";
 import { Box, Card, CardActionArea, CardContent, CardMedia, Typography, useTheme } from "@mui/material";
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
-const ItemCard = ({ movie, maxWidth, imgHeight, imgSize, onCardClick }) => {
+import Link from "next/link";
+const ItemCard = ({ title, releaseDate, posterPath, maxWidth, imgHeight, imgSize, path = '', sx }) => {
 
   const theme = useTheme();
 
-  const {
-    title,
-    release_date: releaseDate,
-    poster_path: poster,
-  } = movie || {};
-
   return (
-    <Card variant='outlined' elevation={0} sx={{ maxWidth: `${maxWidth || 300}px`, display: 'flex', flexDirection: 'column' }}>
-      <CardActionArea onClick={onCardClick}>
+    <Card variant='outlined' elevation={0} sx={{ maxWidth: `${maxWidth || 300}px`, display: 'flex', flexDirection: 'column', ...sx }}>
+      <CardActionArea component={Link} href={path}>
         {
-          poster
+          posterPath
             ? <CardMedia
               component="img"
               sx={{ height: `${imgHeight || 450}px` }}
-              image={movieApi.getImageUrl(poster, imgSize)} />
+              image={movieApi.getImageUrl(posterPath, imgSize)} />
             : <Box sx={{ width: '100%', height: imgHeight, display: 'grid', placeItems: 'center' }}><ImageOutlinedIcon sx={{ fontSize: 60 }} /></Box>
         }
       </CardActionArea>
