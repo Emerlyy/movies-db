@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -7,7 +7,7 @@ const Error = () => {
 
   const router = useRouter();
 
-  const [remain, setRemain] = useState(3);
+  const [remain, setRemain] = useState(5);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -20,16 +20,20 @@ const Error = () => {
     if (remain < 1) {
       router.push('/');
     }
-  }, [remain]);
+  }, [remain, router]);
 
   return (
     <>
       <Head>
         <title>Error</title>
       </Head>
-      <Typography variant="h4" component='h1'>404</Typography>
-      <p>Something went wrong</p>
-      <div>Returning to home page in {remain} seconds</div>
+      <Paper sx={{ flexGrow: 1, display: 'grid', placeItems: 'center' }}>
+        <Box>
+          <Typography textAlign='center' variant='h4' component='h1'>404</Typography>
+          <Typography textAlign='center' variant='body2' component='p'>Something went wrong</Typography>
+          <Typography textAlign='center' variant='caption' component='span'>Returning to home page in {remain} seconds</Typography>
+        </Box>
+      </Paper>
     </>
   );
 };
