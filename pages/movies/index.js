@@ -1,86 +1,88 @@
 import movieApi from "@/client";
 import ItemCard from "@/components/ItemCard";
-import { Box, Button, Container, FormControl, InputLabel, MenuItem, Pagination, Paper, Select, Slider, useTheme } from "@mui/material";
+import Sidebar from "@/components/Sidebar";
+import { useProgressBar } from "@/hooks/useProgressBar";
+import { useQuery } from "@/hooks/useQuery";
+import { Box, Container, Pagination, Paper, Typography } from "@mui/material";
 import Head from "next/head";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import LoadingBar from "react-top-loading-bar";
-import useSWR from 'swr';
-export const getStaticProps = async () => {
-  const data = await movieApi.movies.explore();
+
+export const getServerSideProps = async (context) => {
+
+  for (const value of Object.values(context.query)) {
+    if (!value) {
+      return {
+        notFound: true
+      }
+    }
+  }
+
+  const data = await movieApi.movies.explore(context.query);
+  const genres = await movieApi.movies.getGenres();
+
+  if (!data) {
+    return {
+      notFound: true
+    }
+  }
 
   return {
     props: {
       initialMovies: data.results,
       initialPage: data.page,
-      totalPages: data.total_pages
+      initialTotalPages: data.total_pages,
+      genres
     }
   }
 }
 
-const fetcher = (...args) => movieApi.movies.explore().then((res)=>res.json()) 
 
-const useOptions = (initialOptions) => {
-  const [options, setOptions] = useState({ page: 1, sortingType: 'popularity.desc', ratingLower: 0, ratingHigher: 10, ...initialOptions });
-  console.log(initialOptions)
-  const changeValue = (changes) => {
-    setOptions(prev => ({ ...prev, ...changes }));
-  };
+const Movies = ({ initialMovies, initialTotalPages, initialPage, genres }) => {
+  const [setData, getData, changeData] = useQuery();
+  const query = getData();
 
-  return [options, changeValue];
-}
-
-const Movies = ({ initialMovies, initialPage, totalPages }) => {
-
-  const router = useRouter();
-
-  const [progress, setProgress] = useState(0);
   const [movies, setMovies] = useState(initialMovies);
-  const [options, setOptions] = useOptions(router.query);
+  const [totalPages, setTotalPages] = useState(initialTotalPages);
+  const [page, setPage] = useState(initialPage);
 
-  const theme = useTheme();
+  const [progress, clearProgress, fetchData] = useProgressBar(movieApi.movies.explore, query);
 
-  const { page, sortingType, ratingLower, ratingHigher } = options;
+  const [settings, setSettings] = useState({
+    sortingType: query.sortingType || 'popularity.desc',
+    rating: [Number.parseInt(query.ratingLower) || 0, Number.parseInt(query.ratingHigher) || 10],
+    genres: query.genres?.split(',').map(el => Number.parseInt(el) || null).sort() || []
+  });
 
-  const handlePageChange = (_, value) => {
-    setOptions({ page: value });
+  const handleSidebarSubmit = (sortingType, rating, genres) => {
+    if (page > 1) {
+      setPage(1);
+    }
+    if (genres.length) {
+      setData({ page: 1, sortingType, ratingLower: rating[0], ratingHigher: rating[1], genres: genres.toString() })
+    }
+    else {
+      setData({ page: 1, sortingType, ratingLower: rating[0], ratingHigher: rating[1] })
+    }
+    setSettings({ sortingType, rating, genres });
   };
 
-  const onSortingTypeChange = (e) => {
-    setOptions({ page: 1, sortingType: e.target.value });
-  };
-
-  const onRangeChange = (_, newValue) => {
-    if (ratingLower === newValue[0] && ratingHigher === newValue[1]) return;
-
-    setOptions({
-      ratingLower: newValue[0],
-      ratingHigher: newValue[1]
-    })
-  }
+  const updateMovies = useCallback(() => {
+    fetchData()
+      .then(data => {
+        setMovies(data.results);
+        setTotalPages(data.total_pages);
+      });
+  }, [fetchData]);
 
   useEffect(() => {
-    let isValid = true;
-    const fetchData = async () => {
-      if (!isValid) {
-        return;
-      }
+    updateMovies();
+  }, [query, updateMovies]);
 
-      router.replace({
-        query: {
-          ...options
-        }
-      })
-
-      setProgress(10);
-      const data = await movieApi.movies.explore(options);
-      setMovies(data.results);
-      setProgress(100);
-    }
-    setTimeout(fetchData, 500);
-
-    return () => isValid = false;
-  }, [options]);
+  const handlePageChange = (_, value) => {
+    changeData({ page: value });
+    setPage(value);
+  };
 
   return (
     <>
@@ -90,45 +92,19 @@ const Movies = ({ initialMovies, initialPage, totalPages }) => {
       <LoadingBar
         color='red'
         progress={progress}
-        onLoaderFinished={() => setProgress(0)} />
+        onLoaderFinished={clearProgress} />
       <Box sx={{ display: 'flex' }}>
-        <Paper square variant="outlined" sx={{ flexShrink: 0, py: 6, px: 4, bgcolor: theme.palette.primary.main, width: 300 }}>
-          <FormControl sx={{ minWidth: 240 }}>
-            <InputLabel color="text" id="sort-type-select-label" sx={{ top: -10 }}>Sort by</InputLabel>
-            <Select
-              labelId="sort-type-select-label"
-              id="sort-type-select"
-              value={sortingType}
-              onChange={onSortingTypeChange}
-              color='text'
-              inputProps={{ MenuProps: { disableScrollLock: true } }}
-            >
-              <MenuItem value={'popularity.desc'}>Popularity Descending</MenuItem>
-              <MenuItem value={'popularity.asc'}>Popularity Ascending</MenuItem>
-              <MenuItem value={'vote_average.desc'}>Rating Descending</MenuItem>
-              <MenuItem value={'vote_average.asc'}>Rating Ascending</MenuItem>
-            </Select>
-          </FormControl>
-          <Slider
-            getAriaLabel={() => 'Rating'}
-            value={[ratingLower, ratingHigher]}
-            color='secondary'
-            onChange={onRangeChange}
-            valueLabelDisplay="auto"
-            min={0}
-            max={10}
-          />
-          <Button variant="contained" color='secondary'>Find</Button>
-        </Paper>
+        <Sidebar initialData={settings} onSubmit={handleSidebarSubmit} genres={genres} />
         <Paper square variant="outlined" sx={{ flexGrow: 1, py: 6 }}>
           <Container>
             {
-              movies &&
-              <Box mb={4} sx={{ display: 'grid', gap: 3, gridTemplateColumns: 'repeat(auto-fit, 180px)', justifyContent: 'center' }}>
-                {
-                  movies && movies.map((movie) => <ItemCard maxWidth={180} imgHeight={270} key={movie.id} movie={movie} imgSize='md' onCardClick={() => router.push(`movies/${movie.id}`)} />)
-                }
-              </Box>
+              movies.length
+                ? <Box mb={4} sx={{ display: 'grid', gap: 3, gridTemplateColumns: 'repeat(auto-fit, 180px)', justifyContent: 'center' }}>
+                  {
+                    movies && movies.map((movie) => <ItemCard maxWidth={180} imgHeight={270} key={movie.id} title={movie.title} releaseDate={movie.release_date} posterPath={movie.poster_path} imgSize='md' path={`movies/${movie.id}`} />)
+                  }
+                </Box>
+                : <Typography component='h2'>No items were found that match your query.</Typography>
             }
             <Pagination sx={{ marginX: 'auto', width: 'fit-content' }} siblingCount={3} count={Math.min(totalPages, 500)} variant="outlined" shape="rounded" page={page} onChange={handlePageChange} />
           </Container>
