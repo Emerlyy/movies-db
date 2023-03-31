@@ -10,18 +10,26 @@ const pages = [
   { id: 4, title: 'Saved', path: '/saved' },
 ]
 
-const Navbar = ({ sx }) => {
+const Navbar = ({ sx, onClick }) => {
 
   const { pathname } = useRouter();
 
   return (
     <Box sx={sx}>
+      <Button
+        component={Link}
+        href={'/'}
+        sx={{ display: { xs: 'relative', md: 'none' }, my: 2, color: 'inherit', borderBottom: pathname === '/' ? '1px solid' : 'none', borderRadius: 0 }}
+        onClick={onClick}>
+        Home
+      </Button>
       {pages.map(({ id, title, path }) => (
         <Button
           key={id}
           component={Link}
           href={path}
           sx={{ my: 2, color: 'inherit', borderBottom: pathname === path ? '1px solid' : 'none', borderRadius: 0, display: 'block' }}
+          onClick={onClick}
         >
           {title}
         </Button>
