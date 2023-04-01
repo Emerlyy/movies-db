@@ -48,7 +48,7 @@ const Header = () => {
             color="inherit">
             <MenuIcon />
           </IconButton>
-          <Paper elevation={0} square sx={{ zIndex: 1200, bgcolor: { md: 'inherit' }, width: '100%', alignItems: 'center', justifyContent: 'center', display: 'flex', flexDirection: { xs: 'column', md: 'row' }, position: { xs: 'fixed', md: 'static' }, overflow: 'hidden', top: 0, left: 0, right: 0, bottom: 0, transition: '.3s', transform: { xs: isMenuOpened ? '' : 'translateX(-100%)', md: 'none' } }}>
+          <Paper elevation={0} square sx={{ zIndex: 1201, bgcolor: { md: 'inherit' }, width: '100%', alignItems: 'center', justifyContent: 'center', display: 'flex', flexDirection: { xs: 'column', md: 'row' }, position: { xs: 'fixed', md: 'static' }, overflow: 'hidden', top: 0, left: 0, right: 0, bottom: 0, transition: '.3s', transform: { xs: isMenuOpened ? '' : 'translateX(-100%)', md: 'none' } }}>
             <IconButton size="large" color='inherit' sx={{ display: { md: 'none' }, position: 'absolute', top: 10, right: 10 }} onClick={() => toggleMenu(false)}>
               <CloseIcon color="inherit" />
             </IconButton>

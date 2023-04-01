@@ -142,7 +142,7 @@ const SidebarBody = ({ children, open, onClose, onOpen }) => {
             ModalProps={{
               keepMounted: true,
             }}
-            sx={{ position: 'relative', display: { xs: '', md: 'none' }, zIndex: 2 }}
+            sx={{ position: 'relative', display: { xs: '', md: 'none' }, zIndex: 1200 }}
             PaperProps={{ style: { overflow: 'visible', height: `calc(70% - 30px)` } }}
           >
             <StyledBox
