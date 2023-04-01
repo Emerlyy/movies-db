@@ -59,6 +59,38 @@ export const ColorModeProvider = ({ children }) => {
             }
           }
         }
+      },
+      typography: {
+        h3: {
+          fontSize: '2rem',
+          '@media (min-width:900px)': {
+            fontSize: '3rem',
+          },
+        },
+        h5: {
+          fontSize: '1.2rem',
+          '@media (min-width:600px)': {
+            fontSize: '1.5rem',
+          },
+        },
+        h6: {
+          fontSize: '0.7rem',
+          '@media (min-width:600px)': {
+            fontSize: '0.875rem',
+          },
+          '@media (min-width:900px)': {
+            fontSize: '0.875rem',
+          },
+        },
+        subtitle1: {
+          fontSize: '1.15rem',
+          '@media (min-width:600px)': {
+            fontSize: '1.5rem',
+          },
+          '@media (min-width:900px)': {
+            fontSize: '1.7rem',
+          },
+        }
       }
     }),
     [mode],)
