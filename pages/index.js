@@ -35,12 +35,12 @@ const Home = ({ movies, tv }) => {
       <Paper elevation={0} sx={{ pt: 6, pb: 8 }}>
         <Container maxWidth='lg'>
           <Typography mb={2} component='h2' variant='h3' fontWeight={700}>Welcome.</Typography>
-          <Typography mb={6} component='h3' fontSize={28}>Millions of movies, TV shows and people to discover. Explore now.</Typography>
+          <Typography mb={{ xs: 4, sm: 6 }} component='h3' variant='subtitle1'>Millions of movies, TV shows and people to discover. Explore now.</Typography>
           <FormControl component='form' fullWidth onSubmit={handleFormSubmit} sx={{ position: 'relative' }}>
             <TextField name='search' size='small' autoComplete='off' placeholder='Search for a movie or tv show' color='text' />
-            <Button variant='contained' disableElevation color="secondary" sx={{ position: 'absolute', height: '100%', top: 0, right: 0, textTransform: 'none', px: 6 }}>Search</Button>
+            <Button variant='contained' disableElevation color="secondary" sx={{ position: { xs: 'relative', sm: 'absolute' }, mt: { xs: 2, sm: 0 }, height: '100%', top: 0, right: 0, textTransform: 'none', px: 6 }}>Search</Button>
           </FormControl>
-          <Box mt={8}>
+          <Box mt={{ xs: 4, sm: 8 }}>
             <Typography mb={1} fontWeight={700} variant="h5" component="h3">Trending movies</Typography>
             {
               movies.length &&
@@ -59,7 +59,7 @@ const Home = ({ movies, tv }) => {
               }}>
                 <Box sx={{ display: 'flex', gap: 2, overflowX: 'auto' }}>
                   {
-                    movies.map(({ title, release_date, poster_path, id }) => <ItemCard key={id} maxWidth={260} sx={{ flexShrink: 0 }} title={title} releaseDate={release_date} posterPath={poster_path} path={`movies/${id}`} />)
+                    movies.map(({ title, release_date, poster_path, id }) => <ItemCard key={id} maxWidth={{ xs: 120, sm: 180, md: 260 }} imgHeight={{ xs: 180, sm: 270, md: 390 }} sx={{ flexShrink: 0 }} title={title} releaseDate={release_date} posterPath={poster_path} path={`movies/${id}`} />)
                   }
                 </Box>
               </Box>
@@ -84,7 +84,7 @@ const Home = ({ movies, tv }) => {
               }}>
                 <Box sx={{ display: 'flex', gap: 2, overflowX: 'auto' }}>
                   {
-                    tv.map(({ name, first_air_date, poster_path, id }) => <ItemCard key={id} maxWidth={260} sx={{ flexShrink: 0 }} title={name} releaseDate={first_air_date} posterPath={poster_path} path={`tv/${id}`} />)
+                    tv.map(({ name, first_air_date, poster_path, id }) => <ItemCard key={id} maxWidth={{ xs: 120, sm: 180, md: 260 }} imgHeight={{ xs: 180, sm: 270, md: 390 }} sx={{ flexShrink: 0 }} title={name} releaseDate={first_air_date} posterPath={poster_path} path={`tv/${id}`} />)
                   }
                 </Box>
               </Box>
