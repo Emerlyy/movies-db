@@ -8,34 +8,6 @@ import Head from "next/head";
 import { useCallback, useEffect, useState } from "react";
 import LoadingBar from "react-top-loading-bar";
 
-export const getServerSideProps = async (context) => {
-
-  for (const value of Object.values(context.query)) {
-    if (!value) {
-      return {
-        notFound: true
-      }
-    }
-  }
-
-  const data = await movieApi.movies.explore(context.query);
-  const genres = await movieApi.movies.getGenres();
-
-  if (!data) {
-    return {
-      notFound: true
-    }
-  }
-
-  return {
-    props: {
-      initialMovies: data.results,
-      initialPage: data.page,
-      initialTotalPages: data.total_pages,
-      genres
-    }
-  }
-}
 
 
 const Movies = ({ initialMovies, initialTotalPages, initialPage, genres }) => {
@@ -97,21 +69,53 @@ const Movies = ({ initialMovies, initialTotalPages, initialPage, genres }) => {
         <Sidebar initialData={settings} onSubmit={handleSidebarSubmit} genres={genres} />
         <Paper square variant="outlined" sx={{ flexGrow: 1, py: 6 }}>
           <Container>
+            <Typography sx={{ display: { sm: 'block', md: 'none' } }} variant="h4" component='h1' align="center" mb={4}>Movies</Typography>
             {
               movies.length
-                ? <Box mb={4} sx={{ display: 'grid', gap: 3, gridTemplateColumns: 'repeat(auto-fit, 180px)', justifyContent: 'center' }}>
+                ? <Box mb={4} sx={{ display: 'grid', gap: 3, gridTemplateColumns: { xs: 'repeat(auto-fit, 120px)', sm: 'repeat(auto-fit, 160px)', md: 'repeat(auto-fit, 180px)' }, justifyContent: 'center' }}>
                   {
-                    movies && movies.map((movie) => <ItemCard maxWidth={180} imgHeight={270} key={movie.id} title={movie.title} releaseDate={movie.release_date} posterPath={movie.poster_path} imgSize='md' path={`movies/${movie.id}`} />)
+                    movies && movies.map((movie) => <ItemCard maxWidth={{ md: '100%' }} imgHeight={{ xs: 225, sm: 250, md: 270 }} key={movie.id} title={movie.title} releaseDate={movie.release_date} posterPath={movie.poster_path} imgSize='md' path={`movies/${movie.id}`} />)
                   }
                 </Box>
                 : <Typography component='h2'>No items were found that match your query.</Typography>
             }
-            <Pagination sx={{ marginX: 'auto', width: 'fit-content' }} siblingCount={3} count={Math.min(totalPages, 500)} variant="outlined" shape="rounded" page={page} onChange={handlePageChange} />
+            <Pagination sx={{ marginX: 'auto', width: 'fit-content' }} size='small' siblingCount={1} count={Math.min(totalPages, 500)} variant="outlined" shape="rounded" page={page} onChange={handlePageChange} />
           </Container>
         </Paper>
       </Box>
     </>
   )
 };
+
+
+export const getServerSideProps = async (context) => {
+
+  for (const value of Object.values(context.query)) {
+    if (!value) {
+      return {
+        notFound: true
+      }
+    }
+  }
+
+  const data = await movieApi.movies.explore(context.query);
+  const genres = await movieApi.movies.getGenres();
+
+  if (!data) {
+    return {
+      notFound: true
+    }
+  }
+
+  return {
+    props: {
+      initialMovies: data.results,
+      initialPage: data.page,
+      initialTotalPages: data.total_pages,
+      genres
+    }
+  }
+}
+
 
 export default Movies;
