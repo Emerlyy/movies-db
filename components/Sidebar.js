@@ -1,14 +1,13 @@
 import { useRange } from "@/hooks/useRange";
 import { useSelect } from "@/hooks/useSelect";
-import { Box, Button, Chip, FormControl, ListItem, MenuItem, Paper, Select, Slider, Typography, useTheme } from "@mui/material";
+import { Box, Button, Chip, FormControl, ListItem, MenuItem, Paper, Select, Slider, Typography, useMediaQuery, useTheme, SwipeableDrawer, styled } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
+import { grey } from "@mui/material/colors";
 
 const marks = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => ([0, 5, 10].includes(num) ? { value: num, label: num } : { value: num }))
 
 const Sidebar = ({ initialData, onSubmit, genres }) => {
-
-  const theme = useTheme();
 
   const {
     sortingType: initialSortingType,
@@ -33,9 +32,15 @@ const Sidebar = ({ initialData, onSubmit, genres }) => {
     }
   }, [sortingType, rating, selectedGenres, initialSortingType, initialRating, initialGenres])
 
+  const [open, setOpen] = useState(false);
+
+  const toggleDrawer = (newOpen) => () => {
+    setOpen(newOpen);
+  };
+
   return (
-    <Paper square variant="outlined" sx={{ flexShrink: 0, py: 6, px: 4, bgcolor: theme.palette.primary.main, width: 300 }}>
-      <FormControl sx={{ minWidth: 240 }}>
+    <SidebarBody open={open} onOpen={toggleDrawer(true)} onClose={toggleDrawer(false)}>
+      <FormControl sx={{ width: 240 }}>
         <Typography mb={2}>Sort by</Typography>
         <Select
           id="sort-type-select"
@@ -65,6 +70,7 @@ const Sidebar = ({ initialData, onSubmit, genres }) => {
           max={10}
         />
       </Box>
+
       {genres &&
         <Box mt={5}>
           <Typography mb={2}>Genres</Typography>
@@ -84,17 +90,91 @@ const Sidebar = ({ initialData, onSubmit, genres }) => {
           </Box>
         </Box>
       }
+
       <Box mt={5} ref={ref}>
         <Button
           disabled={!isChanged}
           sx={{ width: '100%', position: inView ? '' : 'fixed', display: (inView || isChanged) ? '' : 'none', bottom: 0, left: 0, right: 0, zIndex: 1, borderRadius: inView ? '' : 0 }}
           variant="contained"
           color='secondary'
-          onClick={() => onSubmit(sortingType, rating, selectedGenres)}>
+          onClick={() => {
+            onSubmit(sortingType, rating, selectedGenres);
+            setOpen(false);
+          }}>
           Search
         </Button>
       </Box>
-    </Paper>
+    </SidebarBody>
+  )
+}
+
+
+const Puller = styled(Box)(({ theme }) => ({
+  width: 30,
+  height: 6,
+  backgroundColor: theme.palette.mode === 'light' ? grey[400] : grey[700],
+  borderRadius: 3,
+  position: 'absolute',
+  top: 8,
+  left: 'calc(50% - 15px)',
+}));
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'light' ? grey[200] : grey[900],
+}))
+
+const SidebarBody = ({ children, open, onClose, onOpen }) => {
+  const theme = useTheme();
+
+  const isSmall = useMediaQuery(theme.breakpoints.down('md'));
+
+  return (
+    <>
+      {
+        isSmall
+          ? <SwipeableDrawer
+            anchor="bottom"
+            open={open}
+            onClose={onClose}
+            onOpen={onOpen}
+            swipeAreaWidth={40}
+            disableSwipeToOpen={false}
+            ModalProps={{
+              keepMounted: true,
+            }}
+            sx={{ position: 'relative', display: { xs: '', md: 'none' }, zIndex: 2 }}
+            PaperProps={{ style: { overflow: 'visible', height: `calc(70% - 30px)` } }}
+          >
+            <StyledBox
+              sx={{
+                position: 'absolute',
+                top: -28,
+                height: 30,
+                borderTopLeftRadius: 8,
+                borderTopRightRadius: 8,
+                visibility: 'visible',
+                right: 0,
+                left: 0,
+              }}
+            >
+              <Puller />
+            </StyledBox>
+            <StyledBox
+              sx={{
+                px: 2,
+                pb: 2,
+                height: '100%',
+                overflow: 'auto',
+              }}
+            >
+              {children}
+            </StyledBox>
+          </SwipeableDrawer>
+          : <Paper square variant="outlined" sx={{ display: { xs: 'none', md: 'block' }, flexShrink: 0, py: 6, px: 4, bgcolor: theme.palette.primary.main, width: 300 }}>
+            {children}
+          </Paper>
+      }
+    </>
   )
 }
 
