@@ -67,6 +67,15 @@ export const ColorModeProvider = ({ children }) => {
             fontSize: '3rem',
           },
         },
+        h4: {
+          fontSize: '1.2rem',
+          '@media (min-width:600px)': {
+            fontSize: '1.8rem',
+          },
+          '@media (min-width:900px)': {
+            fontSize: '2.125rem',
+          },
+        },
         h5: {
           fontSize: '1.2rem',
           '@media (min-width:600px)': {
@@ -89,6 +98,23 @@ export const ColorModeProvider = ({ children }) => {
           },
           '@media (min-width:900px)': {
             fontSize: '1.7rem',
+          },
+        },
+        body2: {
+          fontSize: '0.7rem',
+          '@media (min-width:600px)': {
+            fontSize: '0.875rem',
+          },
+        },
+        tagline: {
+          fontSize: '0.9rem',
+          fontFamily: 'Roboto',
+        },
+        progress: {
+          fontSize: '0.8rem',
+          fontFamily: 'Roboto',
+          '@media (min-width:600px)': {
+            fontSize: '1.5rem',
           },
         }
       }
