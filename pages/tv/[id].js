@@ -1,6 +1,6 @@
 import movieApi from "@/client";
 import ItemInfo from "@/components/ItemInfo";
-import { Box } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import Head from "next/head";
 
 export const getServerSideProps = async (context) => {
@@ -35,7 +35,9 @@ const TVShow = ({ item }) => {
         <title>{item.name}</title>
       </Head>
       <Box sx={{ width: '100%', flexGrow: 1, background: `url('https://www.themoviedb.org/t/p/w1920_and_h800_multi_faces${item.backdrop_path}') no-repeat`, backgroundSize: 'cover' }}>
-        <ItemInfo item={info} />
+        <Container maxWidth='lg'>
+          <ItemInfo item={info} />
+        </Container>
       </Box>
     </>
   )
