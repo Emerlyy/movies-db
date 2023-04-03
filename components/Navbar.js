@@ -7,7 +7,6 @@ const pages = [
   { id: 1, title: 'Movies', path: '/movies' },
   { id: 2, title: 'TV Shows', path: '/tv' },
   { id: 3, title: 'Search', path: '/search' },
-  { id: 4, title: 'Saved', path: '/saved' },
 ]
 
 const Navbar = ({ sx, onClick }) => {
