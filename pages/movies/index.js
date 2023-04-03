@@ -74,7 +74,7 @@ const Movies = ({ initialMovies, initialTotalPages, initialPage, genres }) => {
               movies.length
                 ? <Box mb={4} sx={{ display: 'grid', gap: 3, gridTemplateColumns: { xs: 'repeat(auto-fit, minmax(120px, 33%))', sm: 'repeat(auto-fit, 160px)', md: 'repeat(auto-fit, 180px)' }, justifyContent: 'center' }}>
                   {
-                    movies && movies.map((movie) => <ItemCard maxWidth={{ md: '100%' }} imgHeight={{ xs: 225, sm: 250, md: 270 }} key={movie.id} title={movie.title} releaseDate={movie.release_date} posterPath={movie.poster_path} imgSize='md' path={`movies/${movie.id}`} />)
+                    movies && movies.map((movie) => <ItemCard maxWidth='100%' imgHeight={{ xs: 225, sm: 250, md: 270 }} key={movie.id} title={movie.title} releaseDate={movie.release_date} posterPath={movie.poster_path} imgSize='md' path={`movies/${movie.id}`} />)
                   }
                 </Box>
                 : <Typography component='h2'>No items were found that match your query.</Typography>
