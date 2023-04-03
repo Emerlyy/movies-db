@@ -7,8 +7,6 @@ const SearchCard = ({ item, type, sx }) => {
 
   const theme = useTheme();
 
-  // console.log(item);
-
   return (
     <Card variant='outlined' sx={{ display: 'flex', borderRadius: 2, ...sx }}>
       <CardActionArea sx={{ width: 'fit-content' }} component={Link} href={`${type === 'movie' ? 'movies' : 'tv'}/${item.id}`}>
@@ -33,7 +31,7 @@ const SearchCard = ({ item, type, sx }) => {
           </Typography>
           <Typography color="gray" variant="caption" component='span'>{type === 'movie' ? item.release_date : item.first_air_date}</Typography>
         </Box>
-        <Typography variant="body2" component='p'>{item.overview}</Typography>
+        <Typography sx={{ display: '-webkit-box', overflow: 'hidden', '-webkit-box-orient': 'vertical', lineClamp: '8', '-webkit-line-clamp': '8' }} variant="body2" component='p'>{item.overview}</Typography>
       </CardContent>
     </Card >
   )
