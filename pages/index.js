@@ -6,7 +6,7 @@ import movieApi from "@/client";
 
 import { useRouter } from "next/router";
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
 
   const trendingMovies = await movieApi.movies.getTrending();
   const trendingTv = await movieApi.tv.getTrending();
