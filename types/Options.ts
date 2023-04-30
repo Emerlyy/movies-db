@@ -1,5 +1,3 @@
-import { Genre } from "./Movie";
-
 type Property = 'popularity' | 'release_date' | 'vote_average';
 
 export type SortingType = `${Property}.${'asc' | 'desc'}`
@@ -7,9 +5,9 @@ export type SortingType = `${Property}.${'asc' | 'desc'}`
 export type Rating = [number, number];
 
 export type Options = Partial<{
-    page: number,
+    page: string,
     sortingType: SortingType,
-    genres: Genre[],
-    ratingLower: number,
-    ratingHigher: number
+    genres: string,
+    ratingLower: string,
+    ratingHigher: string
 }>
