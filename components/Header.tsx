@@ -1,6 +1,6 @@
 import Navbar from "./Navbar";
 
-import { AppBar, Box, Container, IconButton, Menu, Paper, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, Container, IconButton, Paper, Toolbar, Typography } from "@mui/material";
 import LiveTvRoundedIcon from '@mui/icons-material/LiveTvRounded';
 import ThemeSwitcher from "./ThemeSwitcher";
 import { useEffect, useState } from "react";
@@ -10,9 +10,9 @@ import Link from "next/link";
 
 const Header = () => {
 
-  const [isMenuOpened, setIsMenuOpened] = useState(false);
+  const [isMenuOpened, setIsMenuOpened] = useState<boolean>(false);
 
-  const toggleMenu = (newState) => {
+  const toggleMenu = (newState: boolean) => {
     setIsMenuOpened(newState);
   };
 

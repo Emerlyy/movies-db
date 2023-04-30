@@ -1,21 +1,31 @@
-import movieApi from "@/client";
-import SearchCard from "@/components/SearchCard";
-import { useProgressBar } from "@/hooks/useProgressBar";
-import { useQuery } from "@/hooks/useQuery";
+import movieApi from "client";
+import SearchCard from "components/SearchCard";
+import { useProgressBar } from "hooks/useProgressBar";
+import { useQuery } from "hooks/useQuery";
 import { Box, Container, Pagination, Paper, TextField, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import LoadingBar from "react-top-loading-bar";
+import { GetServerSideProps } from "next";
+import { ExploreReturnType, LocalItemDetails } from "types";
 
-export const getServerSideProps = async (context) => {
+type ApiType = 'movies' | 'tv';
+
+interface SearchQuery {
+  type?: ApiType,
+  query?: string,
+  page?: number
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const {
     type = 'movies',
     query = '',
     page = 1
-  } = context.query;
+  } = context.query as SearchQuery;
 
-  let data = {
+  let data: ExploreReturnType = {
     page: 0,
     total_pages: 0,
     results: []
@@ -35,8 +45,9 @@ export const getServerSideProps = async (context) => {
   }
 }
 
+interface SearchProps extends Omit<SearchQuery, 'page'>, ExploreReturnType { }
 
-const Search = ({ query: initialQuery, results, total_pages, page, type }) => {
+const Search = ({ query: initialQuery, results, total_pages, page, type }: SearchProps) => {
 
   const [, , changeData] = useQuery();
 
@@ -44,12 +55,12 @@ const Search = ({ query: initialQuery, results, total_pages, page, type }) => {
 
   const [isWaiting, setIsWaiting] = useState(false);
 
-  const handleQueryChange = (value) => {
+  const handleQueryChange = (value: string) => {
     setQuery(value);
     setIsWaiting(true);
   }
 
-  const [progress, clearProgress, refresh] = useProgressBar(() => {
+  const [progress, clearProgress, refresh] = useProgressBar<never>(() => {
     changeData({ query });
   });
 
@@ -61,13 +72,13 @@ const Search = ({ query: initialQuery, results, total_pages, page, type }) => {
     return () => clearTimeout(timeout)
   }, [query]);
 
-  const handleTypeChange = (_, newType) => {
+  const handleTypeChange = (_: never, newType: ApiType) => {
     if (newType) {
       changeData({ type: newType, page: 1 });
     }
   };
 
-  const handlePageChange = (_, value) => {
+  const handlePageChange = (_:never, value: number) => {
     changeData({ page: value });
   };
 
@@ -83,7 +94,7 @@ const Search = ({ query: initialQuery, results, total_pages, page, type }) => {
       <Paper sx={{ py: 6, flexGrow: 1 }}>
         <Container maxWidth="lg">
           <Box mb={4} sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap-reverse', gap: 2 }}>
-            <TextField sx={{ width: '70%', flexGrow: 1 }} size='small' color='text' autoComplete="off" value={query} onChange={(e) => handleQueryChange(e.target.value)} label='Search'></TextField>
+            <TextField sx={{ width: '70%', flexGrow: 1 }} size='small' color='neutral' autoComplete="off" value={query} onChange={(e) => handleQueryChange(e.target.value)} label='Search'></TextField>
             <ToggleButtonGroup
               value={type}
               size='small'

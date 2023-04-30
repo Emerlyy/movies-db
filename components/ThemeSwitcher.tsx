@@ -1,9 +1,15 @@
-import { useColorMode } from '@/context/ColorModeContext';
+import { useColorMode } from '../context/ColorModeContext';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import NightlightIcon from '@mui/icons-material/Nightlight';
 import { IconButton } from '@mui/material';
 
-const ThemeSwitcher = ({ sx }) => {
+interface ThemeSwitcherProps {
+  sx?: {
+    [key: string]: any
+  }
+}
+
+const ThemeSwitcher = ({ sx }: ThemeSwitcherProps) => {
 
   const { mode, toggleColorMode } = useColorMode();
 

@@ -9,7 +9,12 @@ const pages = [
   { id: 3, title: 'Search', path: '/search' },
 ]
 
-const Navbar = ({ sx, onClick }) => {
+interface NavbarProps {
+  onClick: React.MouseEventHandler,
+  sx?: { [key: string]: any }
+}
+
+const Navbar = ({ sx, onClick }: NavbarProps) => {
 
   const { pathname } = useRouter();
 

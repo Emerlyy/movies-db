@@ -1,13 +1,24 @@
-import { useRange } from "@/hooks/useRange";
-import { useSelect } from "@/hooks/useSelect";
+import { useRange } from "hooks/useRange";
+import { useSelect } from "hooks/useSelect";
 import { Box, Button, Chip, FormControl, ListItem, MenuItem, Paper, Select, Slider, Typography, useMediaQuery, useTheme, SwipeableDrawer, styled } from "@mui/material";
-import { useEffect, useState } from "react";
+import { ReactEventHandler, useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { grey } from "@mui/material/colors";
+import { Genre, Rating, SortingType } from "types";
 
 const marks = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => ([0, 5, 10].includes(num) ? { value: num, label: num } : { value: num }))
 
-const Sidebar = ({ initialData, onSubmit, genres }) => {
+interface SidebarProps {
+  initialData: {
+    sortingType: SortingType,
+    rating: Rating,
+    genres: number[]
+  },
+  onSubmit: Function,
+  genres: Genre[]
+}
+
+const Sidebar = ({ initialData, onSubmit, genres }: SidebarProps) => {
 
   const {
     sortingType: initialSortingType,
@@ -34,7 +45,7 @@ const Sidebar = ({ initialData, onSubmit, genres }) => {
 
   const [open, setOpen] = useState(false);
 
-  const toggleDrawer = (newOpen) => () => {
+  const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
   };
 
@@ -46,7 +57,6 @@ const Sidebar = ({ initialData, onSubmit, genres }) => {
           id="sort-type-select"
           value={sortingType}
           onChange={handleSortingTypeChange}
-          color='text'
           inputProps={{ MenuProps: { disableScrollLock: true } }}
         >
           <MenuItem value={'popularity.desc'}>Popularity Descending</MenuItem>
@@ -123,7 +133,15 @@ const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'light' ? grey[200] : grey[900],
 }))
 
-const SidebarBody = ({ children, open, onClose, onOpen }) => {
+
+interface SidebarBodyProps {
+  children: React.ReactElement | React.ReactElement[],
+  open: boolean,
+  onClose: ReactEventHandler,
+  onOpen: ReactEventHandler
+}
+
+const SidebarBody = ({ children, open, onClose, onOpen }: SidebarBodyProps) => {
   const theme = useTheme();
 
   const isSmall = useMediaQuery(theme.breakpoints.down('md'));

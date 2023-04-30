@@ -13,7 +13,7 @@ const Error = () => {
     const interval = setInterval(() => {
       setRemain(prev => prev - 1);
     }, 1000);
-    return () => clearInterval(interval);
+    return () => { clearInterval(interval) }
   }, [router])
 
   useEffect(() => {
