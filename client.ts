@@ -9,11 +9,11 @@ const movieApi = {
   movies: {
     explore: async (options: Options = {}): Promise<ExploreReturnType> => {
       const {
-        page = 1,
+        page = '1',
         sortingType = 'popularity.desc',
-        genres = '',
-        ratingLower = 0,
-        ratingHigher = 10,
+        genres = null,
+        ratingLower = '0',
+        ratingHigher = '10',
       } = options;
 
       const res = await fetch(`${BASE_URL}/discover/movie?api_key=${API_KEY}&page=${page}&sort_by=${sortingType}&vote_average.gte=${ratingLower}&vote_average.lte=${ratingHigher}&include_adult=false&vote_count.gte=50${genres && `&with_genres=${genres}`}`);
@@ -52,11 +52,11 @@ const movieApi = {
   tv: {
     explore: async (options: Options = {}): Promise<ExploreReturnType> => {
       const {
-        page = 1,
+        page = '1',
         sortingType = 'popularity.desc',
-        genres = '',
-        ratingLower = 0,
-        ratingHigher = 10,
+        genres = null,
+        ratingLower = '0',
+        ratingHigher = '10',
       } = options;
 
       const res = await fetch(`${BASE_URL}/discover/tv?api_key=${API_KEY}&page=${page}&sort_by=${sortingType}&vote_average.gte=${ratingLower}&vote_average.lte=${ratingHigher}&include_adult=false&vote_count.gte=50${genres && `&with_genres=${genres}`}`);
