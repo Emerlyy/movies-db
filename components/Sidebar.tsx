@@ -9,7 +9,7 @@ import { Genre, Rating, SortingType } from "types";
 const marks = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => ([0, 5, 10].includes(num) ? { value: num, label: num } : { value: num }))
 
 interface SidebarProps {
-  initialData: {
+  options: {
     sortingType: SortingType,
     rating: Rating,
     genres: number[]
@@ -18,13 +18,13 @@ interface SidebarProps {
   genres: Genre[]
 }
 
-const Sidebar = ({ initialData, onSubmit, genres }: SidebarProps) => {
+const Sidebar = ({ options, onSubmit, genres }: SidebarProps) => {
 
   const {
     sortingType: initialSortingType,
     rating: initialRating,
     genres: initialGenres
-  } = initialData;
+  } = options;
 
   const { ref, inView } = useInView();
 
@@ -32,7 +32,6 @@ const Sidebar = ({ initialData, onSubmit, genres }: SidebarProps) => {
 
   const [sortingType, handleSortingTypeChange] = useSelect(initialSortingType);
   const [rating, handleRatingChange] = useRange(initialRating);
-
   const [selectedGenres, setSelectedGenres] = useState(initialGenres);
 
   useEffect(() => {
@@ -117,7 +116,6 @@ const Sidebar = ({ initialData, onSubmit, genres }: SidebarProps) => {
     </SidebarBody>
   )
 }
-
 
 const Puller = styled(Box)(({ theme }) => ({
   width: 30,
