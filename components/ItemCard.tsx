@@ -1,8 +1,23 @@
-import movieApi from "@/client";
+import movieApi from "client";
 import { Box, Card, CardActionArea, CardContent, CardMedia, Typography, useTheme } from "@mui/material";
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import Link from "next/link";
-const ItemCard = ({ title, releaseDate, posterPath, maxWidth, imgHeight, imgSize, path = '', sx }) => {
+import { ImageSize } from "types";
+
+type CardSize = string | { xs?: string | number, sm?: string | number, md?: string | number, lg?: string | number, xl?: string | number };
+
+interface ItemCardProps {
+  title: string,
+  releaseDate: string,
+  posterPath: string | null,
+  maxWidth?: CardSize,
+  imgHeight?: CardSize,
+  imgSize?: ImageSize,
+  path?: string,
+  sx?: { [key: string]: any }
+}
+
+const ItemCard = ({ title, releaseDate, posterPath, maxWidth, imgHeight, imgSize, path = '', sx }: ItemCardProps) => {
 
   const theme = useTheme();
 
