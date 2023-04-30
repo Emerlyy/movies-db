@@ -7,9 +7,7 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import LoadingBar from "react-top-loading-bar";
 import { GetServerSideProps } from "next";
-import { ExploreReturnType, LocalItemDetails } from "types";
-
-type ApiType = 'movies' | 'tv';
+import { ApiType, ExploreReturnType } from "types";
 
 interface SearchQuery {
   type?: ApiType,
