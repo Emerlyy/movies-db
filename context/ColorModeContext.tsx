@@ -1,11 +1,19 @@
-import { createTheme, ThemeProvider } from "@mui/material";
+import { ThemeProvider } from "@mui/material";
+import { createTheme } from "@mui/material/styles";
+
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { Modes } from "types";
+
 
 export const ColorModeContext = createContext({ toggleColorMode: () => { }, mode: 'dark' });
 
-export const ColorModeProvider = ({ children }) => {
+interface ColorModeContextProps {
+  children: React.ReactNode
+}
 
-  const [mode, setMode] = useState('dark');
+export const ColorModeProvider = ({ children }: ColorModeContextProps) => {
+
+  const [mode, setMode] = useState<Modes>('dark');
   const colorMode = useMemo(() => ({
     toggleColorMode: () => {
       setMode((prevMode) => prevMode === 'light' ? 'dark' : 'light')
@@ -16,7 +24,7 @@ export const ColorModeProvider = ({ children }) => {
   }), [mode]);
 
   useEffect(() => {
-    const mode = localStorage.getItem('theme') || 'dark';
+    const mode = (localStorage.getItem('theme') || 'dark') as Modes;
     setMode(mode);
     document.documentElement.dataset.theme = mode;
   }, [])
@@ -25,26 +33,15 @@ export const ColorModeProvider = ({ children }) => {
     createTheme({
       palette: {
         mode,
-        ...(mode === 'light' ?
-          {
-            primary: {
-              main: '#f5f5f5',
-              contrastText: '#444'
-            },
-            secondary: {
-              main: '#cb0000'
-            }
-          } :
-          {
-            primary: {
-              main: '#121212',
-              contrastText: '#fff'
-            },
-            secondary: {
-              main: '#cb0000'
-            }
-          }
-        )
+        primary: {
+          main: mode === 'light' ? '#f5f5f5' : '#121212'
+        },
+        secondary: {
+          main: '#cb0000'
+        },
+        neutral: {
+          main: mode === 'light' ? "#d2d2d2" : '#2e2e2e'
+        }
       },
       components: {
         MuiContainer: {
@@ -52,11 +49,9 @@ export const ColorModeProvider = ({ children }) => {
             maxWidth: 'xl'
           }
         },
-        MuiCard: {
-          styleOverrides: {
-            root: {
-
-            }
+        MuiSelect: {
+          defaultProps: {
+            color: 'neutral'
           }
         }
       },
