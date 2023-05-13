@@ -1,5 +1,5 @@
-import ItemCard from "components/ItemCard";
-import { Box, Button, Container, FormControl, Paper, TextField, Typography } from "@mui/material";
+
+import { Button, Container, FormControl, Paper, TextField, Typography } from "@mui/material";
 
 import Head from "next/head";
 import movieApi from "client";
