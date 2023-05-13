@@ -7,6 +7,7 @@ import movieApi from "client";
 import { useRouter } from "next/router";
 import { LocalItemGeneral } from "types";
 import { FormEvent } from "react";
+import ItemsList from "components/ItemsList";
 
 export const getServerSideProps = async () => {
   const trendingMovies = await movieApi.movies.getTrending();
@@ -20,15 +21,15 @@ export const getServerSideProps = async () => {
   }
 }
 
-interface HomeProps{
+interface HomeProps {
   movies: LocalItemGeneral[],
   tv: LocalItemGeneral[]
 }
 
-const Home = ({ movies, tv }:HomeProps) => {
+const Home = ({ movies, tv }: HomeProps) => {
   const router = useRouter();
 
-  const handleFormSubmit = (event:FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     router.push({ pathname: '/search', query: { query: event.currentTarget.search.value } })
   }
@@ -46,56 +47,8 @@ const Home = ({ movies, tv }:HomeProps) => {
             <TextField name='search' size='small' autoComplete='off' placeholder='Search for a movie or tv show' color='neutral' />
             <Button variant='contained' disableElevation color="secondary" sx={{ position: { xs: 'relative', sm: 'absolute' }, mt: { xs: 2, sm: 0 }, height: '100%', top: 0, right: 0, textTransform: 'none', px: 6 }}>Search</Button>
           </FormControl>
-          <Box mt={{ xs: 4, sm: 8 }}>
-            <Typography mb={1} fontWeight={700} variant="h5" component="h3">Trending movies</Typography>
-            {
-              movies.length &&
-              <Box sx={{
-                position: 'relative',
-                '&::after': {
-                  content: '""',
-                  display: 'block',
-                  position: 'absolute',
-                  top: 0,
-                  right: 0,
-                  height: '100%',
-                  width: 60,
-                  background: 'linear-gradient(to right, var(--color-fade-start), var(--color-fade-end))'
-                }
-              }}>
-                <Box sx={{ display: 'flex', gap: 2, overflowX: 'auto' }}>
-                  {
-                    movies.map(({ title, release, poster, id }) => <ItemCard key={id} maxWidth={{ xs: 120, sm: 180, md: 260 }} imgHeight={{ xs: 180, sm: 270, md: 390 }} sx={{ flexShrink: 0 }} title={title} releaseDate={release} posterPath={poster} path={`movies/${id}`} />)
-                  }
-                </Box>
-              </Box>
-            }
-          </Box>
-          <Box mt={8}>
-            <Typography mb={1} fontWeight={700} variant="h5" component="h3">Trending TVShows</Typography>
-            {
-              tv.length &&
-              <Box sx={{
-                position: 'relative',
-                '&::after': {
-                  content: '""',
-                  display: 'block',
-                  position: 'absolute',
-                  top: 0,
-                  right: 0,
-                  height: '100%',
-                  width: 60,
-                  background: 'linear-gradient(to right, var(--color-fade-start), var(--color-fade-end))'
-                }
-              }}>
-                <Box sx={{ display: 'flex', gap: 2, overflowX: 'auto' }}>
-                  {
-                    tv.map(({ title, release, poster, id }) => <ItemCard key={id} maxWidth={{ xs: 120, sm: 180, md: 260 }} imgHeight={{ xs: 180, sm: 270, md: 390 }} sx={{ flexShrink: 0 }} title={title} releaseDate={release} posterPath={poster} path={`tv/${id}`} />)
-                  }
-                </Box>
-              </Box>
-            }
-          </Box>
+          <ItemsList title="Trending movies" items={movies} type='movies' sx={{ mt: { xs: 4, sm: 8 } }} />
+          <ItemsList title="Trending TVShows" items={tv} type='tv' sx={{ mt: 8 }} />
         </Container>
       </Paper>
     </>
